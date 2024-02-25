@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import * as THREE from "three";
-import { RigidBody } from "@react-three/rapier";
+import { CuboidCollider, RigidBody } from "@react-three/rapier";
 import { useEffect, useMemo } from "react";
 import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
@@ -115,12 +115,38 @@ const BlockEnd = ({ positionProp = [0, 0, 0] }) => {
 const Walls = ({ length }) => {
   return (
     <>
-      <mesh
-        position={[2.15, 0.75, -(length * 2) + 2]}
-        geometry={boxGeometry}
-        material={wallMaterial}
-        scale={[0.3, 1.5, length * 4]}
-      ></mesh>
+      <RigidBody type="fixed" restitution={0.2} friction={0}>
+        <mesh
+          position={[2.15, 0.75, -(length * 2) + 2]}
+          geometry={boxGeometry}
+          material={wallMaterial}
+          scale={[0.3, 1.5, length * 4]}
+          castShadow
+        ></mesh>
+
+        <mesh
+          position={[-1 * 2.15, 0.75, -(length * 2) + 2]}
+          geometry={boxGeometry}
+          material={wallMaterial}
+          scale={[0.3, 1.5, length * 4]}
+          receiveShadow
+        ></mesh>
+
+        <mesh
+          position={[0, 0.75, -(length * 4) + 2]}
+          geometry={boxGeometry}
+          material={wallMaterial}
+          scale={[4, 1.5, 0.3]}
+          receiveShadow
+        ></mesh>
+
+        <CuboidCollider
+          args={[2, 0.1, 2 * length]}
+          position={[0, -0.1, -(length * 2) + 2]}
+          restitution={0.2}
+          friction={1}
+        />
+      </RigidBody>
     </>
   );
 };
